@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1084432487402",
+    "firebase_url": "https://twitter-leo149.firebaseio.com",
+    "project_id": "twitter-leo149",
+    "storage_bucket": "twitter-leo149.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1084432487402:android:0cac907edd13f8b7fa9893",
+        "android_client_info": {
+          "package_name": "com.awesomeproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1084432487402-dc538dl6bv352gb92uh6k6ivvn9oli88.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzqccUxksNJw8yk0tL1ACmuWuJRZixZS4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1084432487402-dc538dl6bv352gb92uh6k6ivvn9oli88.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
