@@ -34,7 +34,7 @@ class Home extends Component {
     getdata = () => {
 
         // console.log('hello', this.state.name)
-        /// let datas = [];
+         let datas = [];
         this.setState({ refreshing: true })
         database().ref('/' + global.userName + '').child('Twittes').once('value', snapshot => {
             console.log(snapshot)
@@ -43,9 +43,11 @@ class Home extends Component {
                     name: global.userName,
                     twitte: snap.val()
                 }
-                this.setState({
-                    datalist: this.state.datalist.concat(obj)
-                })
+                datas.push(obj)
+               
+            })
+            this.setState({
+                datalist:datas
             })
             // console.log(datas)
         })
