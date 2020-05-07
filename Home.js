@@ -61,7 +61,6 @@ class Home extends Component {
     onsend() {
         let Twitte = this.state.twitte;
         database().ref('/' + global.userName + '').child('Twittes').push().set(Twitte)
-        //reload data
         this.getdata();
     }
     render() {
@@ -77,7 +76,7 @@ class Home extends Component {
                                     <View style={{  height: 60, borderWidth: 1 }}>
                                         <View style={{flex:1,flexDirection: 'row',alignItems: 'center', }}>
                                             <View style={{ width: 50, height: 50, backgroundColor: 'red', borderRadius: 25 ,marginHorizontal:5}}></View>
-                                            <Text style={{fontWeight: 'bold',marginHorizontal:5}}>Rohit Varsada</Text>
+                                            <Text style={{fontWeight: 'bold',marginHorizontal:5}}>Rohit </Text>
                                         </View>
                                     </View>
                                 </View>
