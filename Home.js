@@ -61,6 +61,8 @@ class Home extends Component {
     onsend() {
         let Twitte = this.state.twitte;
         database().ref('/' + global.userName + '').child('Twittes').push().set(Twitte)
+        //reload data
+        this.getdata();
     }
     render() {
 
