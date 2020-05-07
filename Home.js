@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { View, StyleSheet, Button, Text, AsyncStorage, FlatList, RefreshControl, Alert } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import database from '@react-native-firebase/database'
+import Ionicons from 'react-native-ionicons'
 class Home extends Component {
     state = {
         height: 0,
@@ -72,18 +73,28 @@ class Home extends Component {
                         data={this.state.datalist}
                         renderItem={({ item }) =>
                             <>
-                                <View style={{ width: '98%', borderWidth: 1, borderColor: '#1da1f2', height: 100, alignSelf: 'center', borderRadius: 15, marginVertical: 6 }}>
-                                    <View style={{  height: 60, borderWidth: 1 }}>
+                            
+                                <View style={{ width: '98%', borderWidth: 1, borderColor: '#1da1f2', alignSelf: 'center', borderRadius: 15, marginVertical: 6,backgroundColor:'white',elevation:5} }>
+                                    <View style={{  height: 60, borderBottomWidth:0.5,borderColor:'grey' }}>
                                         <View style={{flex:1,flexDirection: 'row',alignItems: 'center', }}>
                                             <View style={{ width: 50, height: 50, backgroundColor: 'red', borderRadius: 25 ,marginHorizontal:5}}></View>
-                                            <Text style={{fontWeight: 'bold',marginHorizontal:5}}>Rohit </Text>
+                                            <Text style={{fontWeight:'900',marginHorizontal:5,fontSize: 17}}>Rohit Varsada</Text>
+                                            <Text style={{opacity:0.5}}>@rohit</Text>
                                         </View>
+                                    </View>
+                                    <View>
+                                        <Text style={{marginHorizontal:10,marginVertical:6}}>{item.twitte}</Text>
+                                    </View>
+                                    <View style={{flexDirection: 'row',justifyContent: 'space-around'}} >
+                                        <Ionicons style={{fontSize:20}}  name="heart-outline" ></Ionicons>
+                                        <Ionicons  style={{fontSize:20}} name ='chatbox-outline' color={'red'} />
                                     </View>
                                 </View>
                                 {/* <View style={{ borderWidth: 1, margin: 5 }}>
                                     <Text style={{ fontWeight: 'bold' }}>{item.name}</Text>
                                     <Text>{item.twitte}</Text>
                                 </View> */}
+                               
                             </>
                         }
                         refreshControl={<RefreshControl
