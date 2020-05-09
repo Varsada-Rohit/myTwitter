@@ -37,18 +37,18 @@ class Home extends Component {
         // console.log('hello', this.state.name)
          let datas = [];
         this.setState({ refreshing: true })
-        database().ref('/' + global.userName + '').child('Twittes').once('value', snapshot => {
+        database().ref('/' + global.userName + '').child('Twittes').orderByValue('Time').once('value', snapshot => {
             console.log(snapshot)
             snapshot.forEach((snap) => {
                 let obj = {
                     name: global.userName,
-                    twitte: snap.val()
+                    twitte: snap.child('Twitte').val()
                 }
                 datas.push(obj)
                
             })
             this.setState({
-                datalist:datas
+                datalist:datas.reverse()
             })
             // console.log(datas)
         })
@@ -61,7 +61,7 @@ class Home extends Component {
 
     onsend() {
         let Twitte = this.state.twitte;
-        database().ref('/' + global.userName + '').child('Twittes').push().set(Twitte)
+        database().ref('/' + global.userName + '').child('Twittes').push().set({Twitte:Twitte,Time:database.ServerValue.TIMESTAMP})
         this.getdata();
     }
     render() {

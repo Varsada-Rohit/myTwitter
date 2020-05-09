@@ -9,7 +9,7 @@ function homeScreen({ navigation }) {
 
             <View style={styles.tt}>
                 <Text style={{ fontSize: 30, fontWeight: 'bold' }}>See what' s happening in the world right now.</Text>
-                <TouchableNativeFeedback onPress={() => navigation.navigate('signIn')}>
+                <TouchableNativeFeedback onPress={() => navigation.navigate('signIn')} style={{borderRadius:30}}>
                     <View style={{ backgroundColor: '#1da1f2', alignItems: 'center', height: 43, borderRadius: 30, justifyContent: 'center', marginTop: 30 }}>
                         <Text style={{ fontSize: 24, fontWeight: 'bold', color: 'white' }}>Create account</Text>
                     </View>
@@ -17,7 +17,7 @@ function homeScreen({ navigation }) {
             </View>
             <View style={styles.endtt}>
                 <Text style={{ color: 'grey' }}>Have an account already?</Text>
-                <TouchableWithoutFeedback onPress={() => navigation.navigate('Login')}>
+                <TouchableWithoutFeedback  onPress={() => navigation.navigate('Login')}>
                     <Text style={{ color: '#1da1f2' }}> Log in</Text>
                 </TouchableWithoutFeedback>
             </View>
