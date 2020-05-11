@@ -18,10 +18,11 @@ import Home from "./Home";
 import homeScreen from "./titlescreen"
 import database from '@react-native-firebase/database'
 import login from "./Login";
-import logout from"./logout";
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
+import logout from "./logout";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Search from "./Search";
 import profile from "./profile";
+import {AuthContext} from "./context"
 
 function LogoTitle() {
     return (
@@ -29,58 +30,57 @@ function LogoTitle() {
     )
 }
 const Tab = new createBottomTabNavigator();
-function TabScreens (){
-    return(
+function TabScreens() {
+    return (
         <Tab.Navigator>
-            <Tab.Screen name='search' component={Search}/>
-            <Tab.Screen name="Home" component={Home} />
-            <Tab.Screen name="Logout" component={logout}/>
+              <Tab.Screen name="Home" component={Home} />
+            <Tab.Screen name='search' component={Search} />
+            <Tab.Screen name="Logout" component={logout} />
         </Tab.Navigator>
 
     )
 }
 
 const stack = createStackNavigator();
-export default class APP extends Component {
+export default function APP() {
+    const [isloading, setisloading] = React.useState(true);
+    const [name, setname] = React.useState('');
+    const [userToken, setUserToken] = React.useState(null);
 
-    state = {
-        name: '',
-        isloading: true
-    }
+    React.useEffect( () => {
+       if(isloading===true){
+           getToken()
+       }
+    },[isloading])
 
-    constructor() {
-        super();
-        this.getToken()
-
-    }
-    async getToken() {
-        try {
+    const getToken = async () => {
+         try {
             let userData = await AsyncStorage.getItem("User");
-            data = JSON.parse(userData)
+            let data = JSON.parse(userData)
+            setUserToken(data);
             global.Token = data;
-            console.log('Token',global.Token);
+            console.log('Token', global.Token);
         } catch (error) {
             console.log("Something went wrong", error);
         }
-        if (global.Token==null) {
-            this.setState({ isloading: false })
+        if (global.Token == null) {
+            setisloading(false);
         }
         else {
-            
-            database().ref().once('value').then(snapshot => {
-                let useremail =global.Token.email;
+
+            database().ref('/Users').once('value').then(snapshot => {
+                let useremail = global.Token.email;
                 //console.log( (useremail))
-                 console.log('snapshot',snapshot)
+                console.log('snapshot', snapshot)
                 snapshot.forEach((user) => {
                     let email = user.child('Email').val()
                     // console.log( (email))
                     if (email === useremail) {
                         //console.log('found')
-                        this.setState({ name: user.child('User').val() })
+                        setname(user.child('User').val())
                         //  console.log(this.state.name)
-                        global.userName = this.state.name;
-                        this.setState({ isloading: false });
-                        // console.log(user.child('User').val().user)
+                        global.userName = user.child('User').val()
+                        setisloading(false)                        // console.log(user.child('User').val().user)
 
                     }
 
@@ -94,34 +94,52 @@ export default class APP extends Component {
         }
 
     }
-    render() {
-        if (this.state.isloading) {
-            return (
-                <View style={{ flex: 1, backgroundColor: '#1da1f2' }}>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={{ color: 'white', fontSize: 50, fontWeight: 'bold' }}>Welcome</Text>
-                    </View>
-                </View>
-            )
-        }
+    const authContext = React.useMemo(() => {
+        return {
+            signIned: (token) => {
+                console.log('yup')
+              setisloading(false);
+                setUserToken(token);
+            },
+            logined: (token) => {
+               setisloading(false);
+                setUserToken(token);
+            },
+            signOut: () => {
+               setisloading(false);
+                setUserToken(null);
+            }
+        };
+    }, []);
+    if (isloading) {
+        
         return (
+            <View style={{ flex: 1, backgroundColor: '#1da1f2' }}>
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={{ color: 'white', fontSize: 50, fontWeight: 'bold' }}>Welcome</Text>
+                </View>
+            </View>
+        )
+    }
+    return (
+        <AuthContext.Provider value={authContext}>
             <NavigationContainer>
-
-                {(global.Token===null) ? (<>
-                    <stack.Navigator screenOptions={{ headerStyle: { elevation: 0, backgroundColor: 'transparent' }, headerTitle: <LogoTitle />, headerTitleAlign: 'center', headerTitleStyle: { height: 25, alignItems: 'center', justifyContent: 'center' } }}>
+             
+                {(!userToken) ? (<>
+                    <stack.Navigator  screenOptions={{ headerStyle: { elevation: 0, backgroundColor: 'transparent' }, headerTitle: <LogoTitle />, headerTitleAlign: 'center', headerTitleStyle: { height: 25, alignItems: 'center', justifyContent: 'center' } }}>
                         <stack.Screen name="Welcome" component={homeScreen} />
                         <stack.Screen name="signIn" component={signIn} />
                         <stack.Screen name="Login" component={login} />
                     </stack.Navigator>
                 </>)
                     : (<>
-                        <stack.Navigator screenOptions={{headerStyle:{ backgroundColor:'#1da1f2'}}}>
-                           <stack.Screen name="tabscreens" component={TabScreens}/>
-                           <stack.Screen name="profile" component={profile}/>
+                        <stack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#1da1f2' } }}>
+                            <stack.Screen name="Twitter" component={TabScreens} />
+                            <stack.Screen name="profile" component={profile} />
                         </stack.Navigator>
                     </>)}
 
             </NavigationContainer>
-        )
-    }
+        </AuthContext.Provider>
+    )
 }

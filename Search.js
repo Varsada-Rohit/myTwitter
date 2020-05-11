@@ -1,7 +1,11 @@
 import React, { Component } from "react";
-import { View, Text, FlatList, TouchableNativeFeedback, Alert } from "react-native";
+import { View, Text, FlatList,Image, TouchableNativeFeedback, Alert } from "react-native";
 import database from '@react-native-firebase/database'
 class Search extends Component {
+    constructor() {
+        super();
+        console.log('glgoglgo', global.userName)
+    }
     state = {
         users: []
     }
@@ -11,29 +15,29 @@ class Search extends Component {
     }
     onProfile = (item) => {
         // database().ref('/'+global.userName).child('following').push().set(item.key)
-        this.props.navigation.navigate('profile', { user: item.key ,name : item.name});
+        this.props.navigation.navigate('profile', { user: item.key, name: item.name });
     }
     getusers() {
         let followings = []
-        let userlist =[]
-        database().ref(global.userName).child("following").once('value', snapshot => {
-            console.log('follow',snapshot)
+        let userlist = []
+        database().ref('/Users/' + global.userName).child("following").once('value', snapshot => {
+            console.log('follow', snapshot)
             snapshot.forEach(snap => {
-                followings.push(snap.val())
+                followings.push(snap.key)
             })
         })
-        
-        database().ref().once('value', snapshot => {
+
+        database().ref('/Users').once('value', snapshot => {
             snapshot.forEach(snap => {
                 if (global.userName === snap.child('User').val()) {
 
                 }
                 else {
-                    console.log(followings.includes( snap.child('User').val()))
+                    console.log(followings.includes(snap.child('User').val()))
                     let obj = {
                         key: snap.child('User').val(),
                         name: snap.child('Name').val(),
-                        status : (followings.includes( snap.child('User').val()))? 'following' : 'follow'
+                        status: (followings.includes(snap.child('User').val())) ? 'unfollow' : 'follow'
                     }
                     // console.log('obj', obj)
                     // this.setState({
@@ -44,13 +48,14 @@ class Search extends Component {
                 }
 
             });
-            this.setState({ users:userlist})
+            this.setState({ users: userlist })
         })
     }
-    onfollowbutton=(item)=> {
-        database().ref('/' + global.userName + '/following').push().set(item.key)
-        database().ref('/' + item.key+ '/follower').push().set(global.userName)
-       this.getusers();
+    onfollowbutton = (item) => {
+
+        database().ref('/Users/' + global.userName + '/following').child(item.key).set(item.status === 'follow' ? 1 : null)
+        database().ref('/Users/' + item.key + '/follower').child(global.userName).set(1)
+        this.getusers();
     }
     render() {
         return (
@@ -63,19 +68,19 @@ class Search extends Component {
                                 <TouchableNativeFeedback onPress={this.onProfile.bind(this, item)}>
                                     <View style={{ flexDirection: 'row', flex: 1, width: '100%' }}>
                                         <View style={{ backgroundColor: 'red', height: 40, width: 40, borderRadius: 20, alignSelf: 'center', marginLeft: 10 }}>
-
+                                            <Image source={require('./images/download.jpg')} style={{ width: 40, height: 40, borderRadius:20}} />
                                         </View>
                                         <View style={{ alignSelf: 'center', marginLeft: 15 }}>
                                             <Text style={{ fontWeight: '800', fontSize: 18 }}>{item.name}</Text>
                                             <Text style={{ fontSize: 12, color: 'grey' }}>@{item.key}</Text>
                                         </View >
-                                     
-                                        <View style={{ alignSelf: 'center', backgroundColor: 'pink', width: 80, height: 30, borderRadius: 20,position:'absolute',right:10}}>
-                                            <TouchableNativeFeedback onPress={this.onfollowbutton.bind(this, item) }>
+
+                                        <View style={{ alignSelf: 'center', backgroundColor: 'pink', width: 80, height: 30, borderRadius: 20, position: 'absolute', right: 10 }}>
+                                            <TouchableNativeFeedback onPress={this.onfollowbutton.bind(this, item)}>
                                                 <Text style={{ alignSelf: 'center', top: 7 }}>{item.status}</Text>
                                             </TouchableNativeFeedback>
                                         </View>
-                                      
+
                                     </View>
                                 </TouchableNativeFeedback>
                             </View>

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Button, Text, ImageBackground, FlatList, TouchableNativeFeedback, Alert } from "react-native";
+import { View, Image, Text, ImageBackground, FlatList, TouchableNativeFeedback, Alert } from "react-native";
 import database from '@react-native-firebase/database';
 import Ionicons from 'react-native-ionicons'
 class profile extends Component {
@@ -20,10 +20,9 @@ class profile extends Component {
     }
 
     getdata = () => {
-        let count =database().ref('/' + this.state.user + '').child('Twittes');
-        console.log('count',count.numChildren())
+      
         let datas = [];
-        database().ref('/' + this.state.user + '').child('Twittes').once('value', snapshot => {
+        database().ref('/Twittes').child(this.state.user).once('value', snapshot => {
         
           //  console.log('ss',count.length)
             
@@ -32,7 +31,8 @@ class profile extends Component {
                 
                 let obj = {
                     name: this.state.user,
-                    twitte: snap.child('Twitte').val()
+                    twitte: snap.child('Twitte').val(),
+                    key :snap.key
                 }
                 datas.push(obj)
 
@@ -45,21 +45,21 @@ class profile extends Component {
     }
 
     buttonText = () => {
-        database().ref('/' + global.userName + '/following').once('value', snapshot => {
+        database().ref('/Users/' + global.userName + '/following').once('value', snapshot => {
             //  console.log(global.userName);
             snapshot.forEach(snap => {
-                if (snap.val() === this.state.user) {
-                    this.setState({ following: 'following' })
+                if (snap.key === this.state.user) {
+                    this.setState({ following: 'unfollow' })
                 }
             });
         })
 
     }
     onfollowbutton() {
-        Alert.alert('yup')
-        database().ref('/' + global.userName + '/following').push().set(this.state.user)
-        database().ref('/' + this.state.user + '/follower').push().set(global.userName)
-        this.setState({ following: 'following' })
+       
+        database().ref('/Users/' + global.userName + '/following').child(this.state.user).set(this.state.following === 'follow' ? 1 : null)
+        database().ref('/Users/' + this.state.user + '/follower').child(global.userName).set(this.state.following === 'follow' ? 1 : null)
+        this.setState({ following: 'unfollow' })
     }
     render() {
         return (
@@ -86,7 +86,9 @@ class profile extends Component {
                         </View>
 
                         <View style={{ position: 'absolute', top: '18%', alignSelf: 'center', alignContent: 'center', width: '100%' }}>
-                            <View style={{ height: 80, width: 80, borderRadius: 40, alignSelf: 'center', backgroundColor: 'black', }}></View>
+                            <View style={{ height: 80, width: 80, borderRadius: 40, alignSelf: 'center', backgroundColor: 'black', }}>
+                            <Image source={require('./images/download.jpg')} style={{width:80,height:80,borderRadius:40}}/>
+                            </View>
                             <View style={{ alignSelf: 'center', top: 10 }}>
                                 <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 25 }}>{this.state.name}</Text>
                             </View>
