@@ -109,7 +109,7 @@ class Home extends Component {
                         renderItem={({ item }) =>
                             <>
 
-                                <View style={{ width: '98%', borderWidth: 1, borderColor: '#1da1f2', alignSelf: 'center', borderRadius: 15, marginVertical: 6, backgroundColor: 'white', elevation: 5 }}>
+                                <View style={{ width: '96%', borderWidth: 1, borderColor: '#1da1f2', alignSelf: 'center', borderRadius: 15, marginVertical: 6, backgroundColor: 'white', elevation: 5 }}>
                                     <View style={{ height: 60, borderBottomWidth: 0.5, borderColor: 'grey' }}>
                                         <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', }}>
                                             <View style={{ width: 50, height: 50, backgroundColor: 'red', borderRadius: 25, marginHorizontal: 5 }}>
@@ -168,7 +168,6 @@ const Styles = StyleSheet.create({
     container: {
         flex: 1,
         height: '100%',
-        marginHorizontal: 10
     },
     textInputView: {
         justifyContent: 'flex-end',

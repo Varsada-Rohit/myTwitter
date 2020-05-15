@@ -15,7 +15,7 @@ class Search extends Component {
     }
     onProfile = (item) => {
         // database().ref('/'+global.userName).child('following').push().set(item.key)
-        this.props.navigation.navigate('profile', { user: item.key, name: item.name });
+        this.props.navigation.navigate('Searchprofile', { user: item.key, name: item.name });
     }
     getusers() {
         let followings = []

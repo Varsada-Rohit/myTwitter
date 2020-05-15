@@ -1,5 +1,5 @@
-import React ,{Comment}from 'react'
-import { StyleSheet, View, Text, Image, Button, TouchableNativeFeedback, TouchableWithoutFeedback, Alert, AsyncStorage } from "react-native";
+import React from 'react'
+import { StyleSheet, View, Text, TouchableNativeFeedback, TouchableWithoutFeedback,  } from "react-native";
 
 function homeScreen({ navigation }) {
    

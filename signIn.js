@@ -1,8 +1,9 @@
-import React, { Component } from "react";
+import React from "react";
 import auth from '@react-native-firebase/auth'
 import database from '@react-native-firebase/database'
 import { AuthContext } from './context'
-import { StyleSheet, View, Text, Image, ActivityIndicator,Ionicons, TextInput, TouchableWithoutFeedback, Alert, ToastAndroid, AsyncStorage } from "react-native";
+import { StyleSheet, View, Text, ActivityIndicator,TextInput, TouchableWithoutFeedback, Alert,  } from "react-native";
+import AsyncStorage from '@react-native-community/async-storage'
 
 function signIn(){
 const { signIned } = React.useContext(AuthContext);
@@ -13,9 +14,6 @@ const [name, setname] = React.useState('');
 const [texthide, settexthide] = React.useState(true);
 const [loading , setloading]= React.useState(false)
 
-const hidingtext=()=>{
-    settexthide(!texthide);
-};
 const submitButton = () => {
 
     setloading(true)

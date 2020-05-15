@@ -10,7 +10,8 @@
 //import { createStackNavigator } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
 import React, { Component } from "react";
-import { View, Text, Image, AsyncStorage } from "react-native";
+import { View, Text, Image } from "react-native";
+import AsyncStorage from '@react-native-community/async-storage'
 import signIn from './signIn';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -22,6 +23,7 @@ import logout from "./logout";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Search from "./Search";
 import profile from "./profile";
+import UserProfile from "./UserProfile"
 import {AuthContext} from "./context"
 
 function LogoTitle() {
@@ -36,6 +38,7 @@ function TabScreens() {
               <Tab.Screen name="Home" component={Home} />
             <Tab.Screen name='search' component={Search} />
             <Tab.Screen name="Logout" component={logout} />
+            <Tab.Screen name="profile" component={UserProfile} />
         </Tab.Navigator>
 
     )
@@ -135,7 +138,7 @@ export default function APP() {
                     : (<>
                         <stack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#1da1f2' } }}>
                             <stack.Screen name="Twitter" component={TabScreens} />
-                            <stack.Screen name="profile" component={profile} />
+                            <stack.Screen name="Searchprofile" component={profile} />
                         </stack.Navigator>
                     </>)}
 

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { View, Button, AsyncStorage, ActivityIndicator } from "react-native"
+import { View, Button, ActivityIndicator } from "react-native"
+import AsyncStorage from '@react-native-community/async-storage'
 import {AuthContext} from './context'
 function logout() {
     const {signOut} = React.useContext(AuthContext);

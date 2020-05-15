@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Text, TextInput, Button,ActivityIndicator, Alert, AsyncStorage } from "react-native";
+import { View, StyleSheet, Text, TextInput, Button,ActivityIndicator, Alert } from "react-native";
+import AsyncStorage from '@react-native-community/async-storage'
 import auth from '@react-native-firebase/auth'
 import database from '@react-native-firebase/database'
 import {AuthContext} from './context'
