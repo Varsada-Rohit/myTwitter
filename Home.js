@@ -36,7 +36,7 @@ class Home extends Component {
         this.setState({ refreshing: true })
         let followings = [];
         let datas = [];
-        let name = [];
+        let detail = [];
         database().ref('/Users/' + global.userName + '/following').once('value', snapshot => {
             snapshot.forEach(following => {
                 followings.push(following.key);
@@ -44,15 +44,18 @@ class Home extends Component {
             followings.push(global.userName)
         }).then(() => {
             followings.forEach((following, index) => {
-                database().ref('Users/' + following + '/Name').once('value', snapshot => {
-                    name.push(snapshot.val())
+                database().ref('Users/' + following).once('value', snapshot => {
+                    let url =snapshot.child('ProfilePhoto').val();
+                    let source = (url === 0)? require('./images/defaultUSer.jpg') : {uri :url}
+                    detail.push({name: snapshot.child('Name').val(),profile :source})
                 }).then(() => {
 
                     database().ref('Twittes/' + following).once('value', snapshot => {
                         snapshot.forEach(snap => {
                            // console.log(name[index])
                             let obj = {
-                                name: name[index],
+                                name: detail[index].name,
+                                profile : detail[index].profile,
                                 user: following,
                                 key: snap.key,
                                 time: snap.child('Time').val(),
@@ -94,6 +97,7 @@ class Home extends Component {
         if(Twitte !== ''){
             database().ref('/Twittes').child(global.userName).push().set({ Twitte: Twitte, Time: database.ServerValue.TIMESTAMP })
             this.getdata();
+            this.setState({twitte:''})
             this.textInput.clear();
         }
         
@@ -112,8 +116,8 @@ class Home extends Component {
                                 <View style={{ width: '96%', borderWidth: 1, borderColor: '#1da1f2', alignSelf: 'center', borderRadius: 15, marginVertical: 6, backgroundColor: 'white', elevation: 5 }}>
                                     <View style={{ height: 60, borderBottomWidth: 0.5, borderColor: 'grey' }}>
                                         <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', }}>
-                                            <View style={{ width: 50, height: 50, backgroundColor: 'red', borderRadius: 25, marginHorizontal: 5 }}>
-                                                <Image source={require('./images/download.jpg')} style={{width:50,height:50,borderRadius:25}}/>
+                                            <View style={{ width: 50, height: 50,  borderRadius: 25, marginHorizontal: 5 }}>
+                                                <Image source={item.profile} style={{width:50,height:50,borderRadius:25}}/>
                                             </View>
                                             <Text style={{ fontWeight: '900', marginHorizontal: 5, fontSize: 17 }}>{item.name}</Text>
                                             <Text style={{ opacity: 0.5 }}>@{item.user}</Text>

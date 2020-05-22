@@ -10,13 +10,25 @@ class ProfileView extends Component {
             user: this.props.user,
             name: this.props.name,
             numberOfTwitte: '',
-            twitteList: []
+            update :this.props.update,
+            twitteList: [],
+            source :require('./images/defaultUSer.jpg')
         }
+        console.log('First',this.state.name)
         this.buttonText();
         this.getdata();
     }
     getdata = () => {
-
+        database().ref('Users/' + this.state.user ).once('value', snapshot => {
+            let url =snapshot.child('ProfilePhoto').val()
+            if(url !== 0){
+                this.setState({source : { uri : url }})
+            }
+            // let src = (url === 0) ? require('./images/defaultUSer.jpg') : {uri : url}
+            
+           
+             console.log('check',snapshot);
+         })
         let datas = [];
         database().ref('/Twittes').child(this.state.user).once('value', snapshot => {
 
@@ -66,11 +78,11 @@ class ProfileView extends Component {
                         width: '100%', height: '45%', shadowColor: 'yellow', elevation: 30, backgroundColor: 'yellow', shadowOpacity: 1, shadowRadius: 16, shadowOffset: { height: 12, width: 0 }
                     }}>
                         <ImageBackground
-                            source={require('./images/gradient.jpg')}
+                            source={this.state.source}
                             style={{
                                 width: '100%', height: '100%', shadowColor: "black"
                             }}
-                            blurRadius={25}
+                            blurRadius={5}
                         >
 
                         </ImageBackground>
@@ -78,15 +90,13 @@ class ProfileView extends Component {
                             style={{ position: 'absolute', backgroundColor: '#0C160D', height: '100%', width: '100%' }}
                             opacity={0.5}
 
-                            blurRadius={60} >
+                            >
 
                         </View>
-                            <View style={{position:'absolute',marginLeft:15}}>
-                                <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20}}>@{this.state.user}</Text>
-                            </View>
+                           
                         <View style={{ position: 'absolute', top: '18%', alignSelf: 'center', alignContent: 'center', width: '100%' }}>
-                            <View style={{ height: 80, width: 80, borderRadius: 40, alignSelf: 'center', backgroundColor: 'black', }}>
-                                <Image source={require('./images/download.jpg')} style={{ width: 80, height: 80, borderRadius: 40 }} />
+                            <View style={{ height: 80, width: 80, borderRadius: 40, alignSelf: 'center' }}>
+                                <Image source={this.state.source} style={{ width: 80, height: 80, borderRadius: 40 }} /> 
                             </View>
                             <View style={{ alignSelf: 'center', top: 10 }}>
                                 <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 25 }}>{this.state.name}</Text>

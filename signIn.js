@@ -42,7 +42,8 @@ const submitButton = () => {
                 database().ref('/Users/' + user).set({
                    Email : Email ,
                    Name : Name ,
-                 User : user 
+                 User : user ,
+                 ProfilePhoto : 0
                  }).then(()=>{
                      global.Token = res.user
                     database().ref('/Users').once('value').then(snapshot => {

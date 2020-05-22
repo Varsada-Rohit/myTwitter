@@ -15,13 +15,13 @@ class Search extends Component {
     }
     onProfile = (item) => {
         // database().ref('/'+global.userName).child('following').push().set(item.key)
-        this.props.navigation.navigate('Searchprofile', { user: item.key, name: item.name });
+        this.props.navigation.navigate('profile', { user: item.key, name: item.name });
     }
     getusers() {
         let followings = []
         let userlist = []
         database().ref('/Users/' + global.userName).child("following").once('value', snapshot => {
-            console.log('follow', snapshot)
+           // console.log('follow', snapshot)
             snapshot.forEach(snap => {
                 followings.push(snap.key)
             })
@@ -33,10 +33,13 @@ class Search extends Component {
 
                 }
                 else {
-                    console.log(followings.includes(snap.child('User').val()))
+                    //console.log(followings.includes(snap.child('User').val()))
+                    let url =snap.child('ProfilePhoto').val();
+                    let source = (url == 0)? require('./images/defaultUSer.jpg') : {uri :url}
                     let obj = {
                         key: snap.child('User').val(),
                         name: snap.child('Name').val(),
+                        profile: source,
                         status: (followings.includes(snap.child('User').val())) ? 'unfollow' : 'follow'
                     }
                     // console.log('obj', obj)
@@ -51,9 +54,40 @@ class Search extends Component {
             this.setState({ users: userlist })
         })
     }
+    transaction =(ref)=>{
+        ref.transaction(followingCount => {
+            if (followingCount === null){
+                return 1;
+            } 
+            else{
+                console.log(followingCount)
+                return followingCount + 1;
+            }
+          })
+    }
     onfollowbutton = (item) => {
 
-        database().ref('/Users/' + global.userName + '/following').child(item.key).set(item.status === 'follow' ? 1 : null)
+        let ref= database().ref('/Users/' + global.userName + '/following').child(item.key);
+        ref.set(item.status === 'follow' ? 1 : null)
+        // let count =ref.transaction(transaction => {
+        //     let doc = transaction.get(ref);
+        //     if(!doc){
+        //         transaction.set(ref,{followingCount : 1})
+        //         return 1;
+        //     }
+        //     else{
+        //         const c = doc.data().followingCount+1
+        //         transaction.update(ref,{followingCount : c})
+        //         return c
+        //     }
+        // })
+        let count = this.transaction(ref);
+        console.log('count',count)
+        // let count =ref.transaction(currentFollowings => {
+        //     if (currentFollowings === null) return 1;
+        //     return currentFollowings + 1;
+        //   });
+        //   console.log(count)
         database().ref('/Users/' + item.key + '/follower').child(global.userName).set(1)
         this.getusers();
     }
@@ -67,8 +101,8 @@ class Search extends Component {
                             <View style={{ flex: 1, height: 60, backgroundColor: '#E9E9E9', width: '90%', alignSelf: 'center', borderRadius: 10, marginVertical: 5 }}>
                                 <TouchableNativeFeedback onPress={this.onProfile.bind(this, item)}>
                                     <View style={{ flexDirection: 'row', flex: 1, width: '100%' }}>
-                                        <View style={{ backgroundColor: 'red', height: 40, width: 40, borderRadius: 20, alignSelf: 'center', marginLeft: 10 }}>
-                                            <Image source={require('./images/download.jpg')} style={{ width: 40, height: 40, borderRadius:20}} />
+                                        <View style={{ height: 40, width: 40, borderRadius: 20, alignSelf: 'center', marginLeft: 10 }}>
+                                            <Image source={item.profile} style={{ width: 40, height: 40, borderRadius:20}} />
                                         </View>
                                         <View style={{ alignSelf: 'center', marginLeft: 15 }}>
                                             <Text style={{ fontWeight: '800', fontSize: 18 }}>{item.name}</Text>
