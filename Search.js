@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, FlatList,Image, TouchableNativeFeedback, Alert } from "react-native";
+import { View, Text, FlatList,Image, TouchableNativeFeedback,TextInput, Alert } from "react-native";
 import database from '@react-native-firebase/database'
 class Search extends Component {
     constructor() {
@@ -16,6 +16,34 @@ class Search extends Component {
     onProfile = (item) => {
         // database().ref('/'+global.userName).child('following').push().set(item.key)
         this.props.navigation.navigate('profile', { user: item.key, name: item.name });
+    }
+    onSearch (searchText){
+        let followings = []
+        let searchedUSer = []
+        database().ref('/Users/' + global.userName).child("following").once('value', snapshot => {
+            // console.log('follow', snapshot)
+             snapshot.forEach(snap => {
+                 followings.push(snap.key)
+             })
+         })
+         database().ref('/Users').once('value', snapshot => {
+            snapshot.forEach(snap => {
+                let userName = snap.child('User').val();
+                let name = snap.child('Name').val();
+                if(userName.toLowerCase().indexOf(searchText) > -1 || name.toLowerCase().indexOf(searchText) > -1){
+                    let url =snap.child('ProfilePhoto').val();
+                    let source = (url == 0)? require('./images/defaultUSer.jpg') : {uri :url}
+                    let obj = {
+                        key: userName,
+                        name: name,
+                        profile: source,
+                        status: (followings.includes(userName)) ? 'unfollow' : 'follow'
+                    }
+                    searchedUSer.push(obj)
+                }
+            })
+            this.setState({ users : searchedUSer})
+        })
     }
     getusers() {
         let followings = []
@@ -94,6 +122,9 @@ class Search extends Component {
     render() {
         return (
             <View>
+                <TextInput style={{backgroundColor:'grey', marginHorizontal:10,borderRadius:30 ,height:40,marginTop:10,paddingHorizontal:10}}
+                    onChangeText ={(value) =>this.onSearch(value.toLowerCase())}
+                />
                 <FlatList
                     data={this.state.users}
                     renderItem={({ item }) =>

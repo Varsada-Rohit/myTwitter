@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu'
 import { View } from 'react-native'
 import Ionicon from 'react-native-ionicons'
+import AsyncStorage from '@react-native-community/async-storage'
 import {AuthContext} from './context'
 export default function PopupMenu({navigation}) {
     const {signOut} = React.useContext(AuthContext);
